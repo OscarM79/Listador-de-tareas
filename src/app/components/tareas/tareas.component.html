@@ -1,0 +1,64 @@
+<!--Lista de tareas-->
+<div class="container pt-3 mb-4">
+    <div class="card shadow-lg">
+        <div class="card-header text-center bg-info bg-opacity-25">Lista de tareas</div>
+        <div class="card-body">
+            <div class="row">
+                <!--Registro de tareas-->
+                <div class="col-12 col-lg-6">
+                    <form action="#" [formGroup]="crearTarea" (ngSubmit)=" agregarEditarTarea()">
+                        <div class="mb-4">
+                            <label for="titulo" class="form-label fw-bold">Titulo de tarea:</label>
+                            <input type="text" class="form-control" placeholder="Agregar tarea" formControlName ="nombre" name="titulo" />
+                        </div>
+                        <div class="mb-4">
+                            <label for="descripcion" class="form-label fw-bold">Descripcion:</label>
+                            <textarea class="form-control" placeholder="Descripción de la tarea"
+                            formControlName ="descripcion" name="descripcion"></textarea>
+                        </div>
+                        <div class="d-grid mb-4 ">
+                            <span *ngIf="submitted && crearTarea.invalid" class="alert alert-danger d-flex align-items-center">Campo titulo obligatorio</span>
+                            <button type="submit" class="btn btn-primary">
+                                {{btnAgregar}}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <!--Contenedor de tareas-->
+                <div class="col-12 col-lg-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <span *ngIf = "listaTarea.length == 0">Sin tarea</span>
+                            <div *ngIf = "listaTarea.length > 0" class="accordion" id="accordion">
+                                <div class="accordion-item" *ngFor ="let tareas of listaTarea; let indice = index">
+                                    <h2 class="accordion-header" id="headingTwo">
+                                        <button class="accordion-button collapsed" type="button"
+                                            data-bs-toggle="collapse" [attr.data-bs-target]="'#collapse'+indice">
+                                            <p class="m-0">{{ tareas.nombre }}</p>
+                                        </button>
+                                    </h2>
+                                    <div id="collapse{{indice}}" class="accordion-collapse collapse"
+                                        aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                                        <div class="accordion-body">
+                                            <p *ngIf="tareas.descripcion === '' " >Sin descripcion</p>
+                                            <p>{{tareas.descripcion}}</p>
+                                            
+                                            <div class="d-flex justify-content-center">
+                                                <i class="btn bg-info bg-gradient me-3" (click)="editarTarea()" [routerLink]="['/editar-tarea/',tareas.id]">
+                                                    Editar
+                                                </i>
+                                                <i (click)="eliminarT(tareas.id)" class="btn bg-danger bg-gradient me-3">
+                                                    Eliminar
+                                                </i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
