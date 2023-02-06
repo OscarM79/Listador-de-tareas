@@ -47,7 +47,6 @@ export class TareasComponent {
     }else{
       this.submitted=true;
     }
-    this.crearTarea.reset();
   }
   //Guardar nueva tarea
   agregarTarea(crtTarea:any){
@@ -56,21 +55,17 @@ export class TareasComponent {
     }).catch(error =>{
       this.mensajeError();
     });
-    this.crearTarea.reset();
   }
 
   //Actualizar datos de tarea
   actualizarTarea(id:string,actTarea:any){
-    console.log(this.id);
-    
     this._tareas.actualizarTarea(id,actTarea).then(()=>{
       this.mensajeExito('Datos actualizados');
     }).catch(error=>{
       this.mensajeError();
     });
     this.id = "";
-    this.btnAgregar = "Agregar tarea";
-    this.router.navigate(['/lista-tarea'])
+    this.btnAgregar = "Agregar tarea";    
   }
   //Obtener lista de tareas
   getTareas(){
