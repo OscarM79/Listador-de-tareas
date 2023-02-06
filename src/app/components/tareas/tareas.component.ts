@@ -13,19 +13,19 @@ export class TareasComponent {
   submitted = false;
   loading = false;
   listaTarea:any[] = [];
-  id: string | null;
-  btnAgregar = "Agregar tarea";
+  id:string = "";
+  btnAgregar:string = "Agregar tarea";
+  habilitar:boolean = true;
   
 
   constructor(private fb: FormBuilder, 
       private _tareas: TareasService,
       private aRoute: ActivatedRoute,
       private router: Router){
-    this.crearTarea = this.fb.group({
+      this.crearTarea = this.fb.group({
       nombre: ['',Validators.required],
       descripcion: ['']
-     });
-     this.id = this.aRoute.snapshot.paramMap.get('id');     
+     })
   }
 
   ngOnInit():void{
@@ -33,23 +33,22 @@ export class TareasComponent {
   }
   agregarEditarTarea(){
     this.submitted = true;
-    if(this.crearTarea.invalid){
-      return
-    }
-    if(this.id === null){
-      this.agregarTarea();
-    }else{
-      console.log('editar');
-      this.actualizarTarea(this.id);
-    }
-
-  }
-  //Guardar nueva tarea
-  agregarTarea(){
-    const crtTarea:any ={
+    const datosTarea:any ={
       nombre: this.crearTarea.value.nombre,
       descripcion: this.crearTarea.value.descripcion
     }
+    if(this.crearTarea.invalid){
+      return
+    }
+    if(this.id === ""){
+      this.agregarTarea(datosTarea);
+    }else{
+      this.actualizarTarea(this.id,datosTarea);
+    }
+    this.crearTarea.reset();
+  }
+  //Guardar nueva tarea
+  agregarTarea(crtTarea:any){
     this._tareas.agregarTarea(crtTarea).then (() =>{
       return
     }).catch(error =>{
@@ -59,15 +58,14 @@ export class TareasComponent {
   }
 
   //Actualizar datos de tarea
-  actualizarTarea(id:string){
+  actualizarTarea(id:string,actTarea:any){
     console.log(this.id);
-    const actTarea:any ={
-      nombre: this.crearTarea.value.nombre,
-      descripcion: this.crearTarea.value.descripcion
-    }
+    
     this._tareas.actualizarTarea(id,actTarea).then(()=>{
       console.log("Datos actualizados");
     });
+    this.id = "";
+    this.btnAgregar = "Agregar tarea";
     this.router.navigate(['/lista-tarea'])
   }
   //Obtener lista de tareas
@@ -84,6 +82,7 @@ export class TareasComponent {
     });
   }
 
+  //Eliminar tarea
   eliminarT(id: string){
     this._tareas.eliminarTarea(id).then(()=>{
       console.log('Tarea eliminada');
@@ -92,17 +91,16 @@ export class TareasComponent {
     })
   }
 
-  editarTarea(){
+  //Editar tarea
+  editarTarea(id:string){
     this.btnAgregar = "Actualizar tarea";
-    if(this.id !=null){
-      this._tareas.getTarea(this.id).subscribe(data =>{
+    this.id = id;
+      this._tareas.getTarea(id).subscribe(data =>{
         this.crearTarea.setValue({
           nombre: data.payload.data()['nombre'],
           descripcion: data.payload.data()['descripcion']
-        }),
-        console.log(data.payload.data()['nombre'])
-      })
-    }
+        })
+      });     
   }
 
 }

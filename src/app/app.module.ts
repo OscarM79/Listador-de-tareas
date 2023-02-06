@@ -19,7 +19,7 @@ import { provideFirestore,getFirestore } from '@angular/fire/firestore';
   declarations: [
     AppComponent,
     TareasComponent,
-    NavbarComponent
+    NavbarComponent,
   ],
   imports: [
     BrowserModule,
