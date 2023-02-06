@@ -9,7 +9,7 @@
                     <form action="#" [formGroup]="crearTarea" (ngSubmit)=" agregarEditarTarea()">
                         <div class="mb-4">
                             <label for="titulo" class="form-label fw-bold">Titulo de tarea:</label>
-                            <input type="text" class="form-control" placeholder="Agregar tarea" formControlName ="nombre" name="titulo" />
+                            <input type="text" class="form-control" placeholder="Agregar tarea" formControlName ="nombre" name="titulo"/>
                         </div>
                         <div class="mb-4">
                             <label for="descripcion" class="form-label fw-bold">Descripcion:</label>
@@ -17,7 +17,7 @@
                             formControlName ="descripcion" name="descripcion"></textarea>
                         </div>
                         <div class="d-grid mb-4 ">
-                            <span *ngIf="submitted && crearTarea.invalid" class="alert alert-danger d-flex align-items-center">Campo titulo obligatorio</span>
+                            <span *ngIf="submitted" class="alert alert-danger d-flex align-items-center">Campo titulo obligatorio</span>
                             <button type="submit" class="btn btn-primary">
                                 {{btnAgregar}}
                             </button>
@@ -47,7 +47,7 @@
                                                 <i class="btn bg-info bg-gradient me-3" (click)="editarTarea(tareas.id)" >
                                                     Editar
                                                 </i>
-                                                <i (click)="eliminarT(tareas.id)" class="btn bg-danger bg-gradient me-3">
+                                                <i (click)="eliminarT(tareas.id,tareas.nombre)" class="btn bg-danger bg-gradient me-3">
                                                     Eliminar
                                                 </i>
                                             </div>

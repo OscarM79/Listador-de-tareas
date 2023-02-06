@@ -5,7 +5,6 @@ import { TareasComponent } from './components/tareas/tareas.component';
 const routes: Routes = [
   {path: '',redirectTo: 'lista-tarea',pathMatch:'full'},
   {path: 'lista-tarea',component: TareasComponent},
-  {path: 'editar-tarea/:id',component: TareasComponent},
   {path: '**',redirectTo: 'lista-tarea',pathMatch:'full'}
 ];
 

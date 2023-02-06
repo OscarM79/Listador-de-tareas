@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TareasService } from '../../services/tareas.service';
-
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-tareas',
   templateUrl: './tareas.component.html',
@@ -23,7 +23,7 @@ export class TareasComponent {
       private aRoute: ActivatedRoute,
       private router: Router){
       this.crearTarea = this.fb.group({
-      nombre: ['',Validators.required],
+      nombre: [''],
       descripcion: ['']
      })
   }
@@ -31,28 +31,30 @@ export class TareasComponent {
   ngOnInit():void{
     this.getTareas();
   }
+  //Metodo de agregaaar o editar tarea
   agregarEditarTarea(){
-    this.submitted = true;
     const datosTarea:any ={
       nombre: this.crearTarea.value.nombre,
       descripcion: this.crearTarea.value.descripcion
     }
-    if(this.crearTarea.invalid){
-      return
-    }
+    if(this.crearTarea.value.nombre){  
+      this.submitted = false;  
     if(this.id === ""){
       this.agregarTarea(datosTarea);
     }else{
       this.actualizarTarea(this.id,datosTarea);
+    }
+    }else{
+      this.submitted=true;
     }
     this.crearTarea.reset();
   }
   //Guardar nueva tarea
   agregarTarea(crtTarea:any){
     this._tareas.agregarTarea(crtTarea).then (() =>{
-      return
+      this.mensajeExito('Tarea agregada');
     }).catch(error =>{
-      console.log(error);
+      this.mensajeError();
     });
     this.crearTarea.reset();
   }
@@ -62,7 +64,9 @@ export class TareasComponent {
     console.log(this.id);
     
     this._tareas.actualizarTarea(id,actTarea).then(()=>{
-      console.log("Datos actualizados");
+      this.mensajeExito('Datos actualizados');
+    }).catch(error=>{
+      this.mensajeError();
     });
     this.id = "";
     this.btnAgregar = "Agregar tarea";
@@ -83,12 +87,27 @@ export class TareasComponent {
   }
 
   //Eliminar tarea
-  eliminarT(id: string){
-    this._tareas.eliminarTarea(id).then(()=>{
-      console.log('Tarea eliminada');
-    }).catch(error =>{
-      console.log(error);
+  eliminarT(id: string,titulo:string){
+    //Mensaje de confirmacion emergente
+    Swal.fire({
+      title: '¿Seguro en eliminar?',
+      text: "Eliminar tarea "+titulo,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'SI!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        //Proceso de borrar dato en firebase
+        this._tareas.eliminarTarea(id).then(()=>{
+          this.mensajeExito('Tarea eliminada');
+        }).catch(error =>{
+          this.mensajeError();
+        })
+      }
     })
+    
   }
 
   //Editar tarea
@@ -102,5 +121,20 @@ export class TareasComponent {
         })
       });     
   }
-
+//Mensaje de exito
+  mensajeExito(mensaeje:string){
+    Swal.fire(
+            mensaeje,
+            '',
+            'success'
+          )
+  }
+  //Mensaje de error
+  mensajeError(){
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'Se produjo un error'
+    })
+  }
 }
